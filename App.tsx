@@ -410,8 +410,7 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* MODALS LAINNYA (TETAP SAMA) */}
-      {/* ... (Modal QR, Barcode, Shipping, Receipt, Scanner tetap ada seperti sebelumnya) ... */}
+      {/* QR MODAL */}
       {activeModal === ModalType.QR_GEN && (
         <div className="fixed inset-0 bg-black/80 z-[200] flex items-center justify-center p-6 animate-in zoom-in duration-300 backdrop-blur-sm">
           <div className="bg-white w-full rounded-[2.5rem] p-8 space-y-6 shadow-2xl">
@@ -431,6 +430,7 @@ const App: React.FC = () => {
         </div>
       )}
 
+      {/* BARCODE MODAL */}
       {activeModal === ModalType.BARCODE_GEN && (
         <div className="fixed inset-0 bg-black/80 z-[200] flex items-center justify-center p-6 animate-in zoom-in duration-300 backdrop-blur-sm">
           <div className="bg-white w-full rounded-[2.5rem] p-8 space-y-6 shadow-2xl">
@@ -450,6 +450,7 @@ const App: React.FC = () => {
         </div>
       )}
 
+      {/* SHIPPING MODAL */}
       {activeModal === ModalType.SHIPPING && (
         <div className="fixed inset-0 bg-black/80 z-[100] flex items-end justify-center animate-in fade-in duration-200">
           <div className="bg-white w-full max-w-sm rounded-t-[2.5rem] overflow-hidden flex flex-col max-h-[90vh]">
@@ -495,6 +496,7 @@ const App: React.FC = () => {
         </div>
       )}
 
+      {/* RECEIPT MODAL */}
       {activeModal === ModalType.RECEIPT && (
         <div className="fixed inset-0 bg-black/80 z-[100] flex items-end justify-center animate-in fade-in duration-200">
           <div className="bg-white w-full max-w-sm rounded-t-[2.5rem] overflow-hidden flex flex-col max-h-[90vh]">
