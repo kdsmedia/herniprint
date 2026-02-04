@@ -1,16 +1,19 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Inisialisasi di dalam fungsi agar tidak menyebabkan crash saat modul di-import
+const getAIClient = () => {
+  return new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+};
 
 export const extractShippingData = async (base64Image: string) => {
-  // Fix: Call generateContent with the model directly as per guidelines
+  const ai = getAIClient();
   const response = await ai.models.generateContent({
     model: 'gemini-3-flash-preview',
     contents: {
       parts: [
         { inlineData: { data: base64Image, mimeType: 'image/jpeg' } },
-        { text: 'Extract shipping information from this image into a clean JSON format.' }
+        { text: 'Extract shipping information from this image into a clean JSON format. Focus on recipient details.' }
       ]
     },
     config: {
@@ -29,19 +32,18 @@ export const extractShippingData = async (base64Image: string) => {
     }
   });
 
-  // Fix: Access response.text directly (do not call as a method)
   const jsonStr = response.text?.trim() || '{}';
   return JSON.parse(jsonStr);
 };
 
 export const extractReceiptData = async (base64Image: string) => {
-  // Fix: Call generateContent with the model directly as per guidelines
+  const ai = getAIClient();
   const response = await ai.models.generateContent({
     model: 'gemini-3-flash-preview',
     contents: {
       parts: [
         { inlineData: { data: base64Image, mimeType: 'image/jpeg' } },
-        { text: 'Extract list of items, quantities, and prices from this receipt image.' }
+        { text: 'Extract list of items, quantities, and prices from this receipt image. Return an array of objects.' }
       ]
     },
     config: {
@@ -61,7 +63,6 @@ export const extractReceiptData = async (base64Image: string) => {
     }
   });
 
-  // Fix: Access response.text directly (do not call as a method)
   const jsonStr = response.text?.trim() || '[]';
   return JSON.parse(jsonStr);
 };
