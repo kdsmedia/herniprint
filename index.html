@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,12 +7,12 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3000/3000185.png">
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="/manifest.json">
     <title>HERNIPRINT Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
     <script>
-      // Wajib ada paling atas untuk mencegah 'process is not defined'
+      // Global shim for process.env to satisfy Google GenAI SDK
       window.process = { env: { API_KEY: "" } };
     </script>
     <style>
@@ -67,7 +66,6 @@
     
     <div id="root"></div>
 
-    <!-- Gunakan path relatif tanpa slash di depan agar Vite build mendeteksinya -->
     <script type="module" src="index.tsx"></script>
     
     <script>
@@ -83,7 +81,18 @@
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').catch(() => {});
+                // Gunakan path absolut '/sw.js' di Vercel untuk menghindari 404 saat install
+                // Namun gunakan relative URL generator untuk kompatibilitas sandbox dev
+                const isVercel = window.location.hostname.includes('vercel.app');
+                const swUrl = isVercel ? '/sw.js' : new URL('sw.js', window.location.href).href;
+
+                navigator.serviceWorker.register(swUrl)
+                  .then(reg => {
+                    console.log('SW Registered with scope:', reg.scope);
+                  })
+                  .catch(err => {
+                    console.error('SW Registration Failed:', err);
+                  });
             });
         }
     </script>
