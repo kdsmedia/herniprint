@@ -1,0 +1,9 @@
+{
+  "name": "HERNIPRINT Pro",
+  "description": "A world-class professional thermal printing application with AI-powered label extraction, Bluetooth connectivity, and smart receipt generation.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}
