@@ -5,7 +5,7 @@ import {
   Truck, ShoppingBag, Plus, Minus, RotateCw, X, ChevronRight, 
   Bluetooth, Trash2, Camera, Loader2, Info,
   CheckCircle2, Smartphone, DownloadCloud, ShieldCheck, MapPin,
-  Usb, ExternalLink, Sparkles, MessageCircle, AlertTriangle
+  Usb, ExternalLink, Sparkles, MessageCircle, AlertTriangle, ArrowLeft
 } from 'lucide-react';
 import { PaperSize, ModalType, ShippingData, ReceiptItem } from './types';
 import { printerService } from './services/bluetoothService';
@@ -178,6 +178,9 @@ const App: React.FC = () => {
       </div>
     );
     setActiveModal(ModalType.NONE);
+    // Reset controls for new preview
+    setRotation(0);
+    setScale(1);
   };
 
   const generateBarcodePreview = () => {
@@ -190,6 +193,9 @@ const App: React.FC = () => {
       </div>
     );
     setActiveModal(ModalType.NONE);
+    // Reset controls for new preview
+    setRotation(0);
+    setScale(1);
   };
 
   const addReceiptItem = () => {
@@ -266,41 +272,61 @@ const App: React.FC = () => {
           </div>
           <Plus className="w-4 h-4" />
         </button>
+        
+        <div className="pb-10" />
+      </main>
 
-        {previewContent && (
-          <div className="space-y-4 pt-6 border-t animate-in fade-in duration-500">
-            <div className="flex items-center justify-between px-2">
-              <h2 className="font-black text-slate-400 text-[10px] uppercase tracking-widest italic">WYSIWYG Preview</h2>
-              <button onClick={() => setPreviewContent(null)} className="text-[10px] text-red-500 font-black uppercase">Reset</button>
+      {/* FULL-SCREEN PREVIEW MODAL */}
+      {previewContent && (
+        <div className="fixed inset-0 bg-slate-900 z-[500] flex flex-col animate-in fade-in zoom-in duration-300">
+          {/* Preview Header */}
+          <div className="p-6 flex justify-between items-center bg-slate-900 text-white border-b border-slate-800">
+            <button onClick={() => setPreviewContent(null)} className="flex items-center gap-2 text-sm font-black uppercase italic tracking-tighter hover:text-blue-400 transition">
+              <ArrowLeft className="w-5 h-5" /> Kembali
+            </button>
+            <div className="text-center">
+              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Preview Cetak</p>
+              <p className="text-xs font-bold text-blue-400">{paperSize}mm Thermal Paper</p>
             </div>
-            <div className="bg-slate-100 border-8 border-slate-100 rounded-[2.5rem] overflow-hidden flex flex-col items-center p-4 shadow-inner">
+            <button onClick={() => setPreviewContent(null)} className="p-2 bg-slate-800 rounded-full">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Preview Canvas Area */}
+          <div className="flex-1 overflow-auto p-10 flex flex-col items-center justify-center relative bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:20px_20px]">
+            <div className="absolute top-4 right-4 flex flex-col gap-2 z-10">
+              <button onClick={() => setRotation(r => (r + 90) % 360)} className="w-14 h-14 bg-white/10 backdrop-blur-xl text-white rounded-2xl flex items-center justify-center hover:bg-white/20 transition-all shadow-xl border border-white/10"><RotateCw className="w-6 h-6" /></button>
+              <button onClick={() => setScale(s => Math.min(2, s + 0.1))} className="w-14 h-14 bg-white/10 backdrop-blur-xl text-white rounded-2xl flex items-center justify-center hover:bg-white/20 transition-all shadow-xl border border-white/10"><Plus className="w-6 h-6" /></button>
+              <button onClick={() => setScale(s => Math.max(0.5, s - 0.1))} className="w-14 h-14 bg-white/10 backdrop-blur-xl text-white rounded-2xl flex items-center justify-center hover:bg-white/20 transition-all shadow-xl border border-white/10"><Minus className="w-6 h-6" /></button>
+            </div>
+
+            <div className="bg-white shadow-[0_0_100px_rgba(0,0,0,0.5)] rounded-sm overflow-hidden transform-gpu" style={{ transform: `scale(${scale}) rotate(${rotation}deg)` }}>
               <div 
                 ref={captureRef} 
                 style={{ 
-                  transform: `rotate(${rotation}deg) scale(${scale})`, 
                   width: paperSize === '58' ? '384px' : '576px',
                   backgroundColor: 'white'
                 }} 
-                className="origin-center transition-all shadow-sm"
+                className="transition-all"
               >
                 {previewContent}
               </div>
             </div>
-            <div className="flex gap-3 justify-center">
-              <button onClick={() => setRotation(r => (r + 90) % 360)} className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center active:bg-slate-200 transition"><RotateCw className="w-5 h-5" /></button>
-              <button onClick={() => setScale(s => Math.min(1.5, s + 0.1))} className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center active:bg-slate-200 transition"><Plus className="w-5 h-5" /></button>
-              <button onClick={() => setScale(s => Math.max(0.7, s - 0.1))} className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center active:bg-slate-200 transition"><Minus className="w-5 h-5" /></button>
-            </div>
-            <button onClick={handlePrint} disabled={isPrinting} className="w-full py-6 bg-blue-600 disabled:bg-blue-300 text-white rounded-[2rem] font-black shadow-2xl active:scale-[0.97] transition-all flex items-center justify-center gap-3">
-              {isPrinting ? <Loader2 className="w-6 h-6 animate-spin" /> : <Printer className="w-6 h-6" />}
-              {isPrinting ? 'MENGIRIM...' : 'CETAK SEKARANG'}
-            </button>
           </div>
-        )}
-        <div className="pb-10" />
-      </main>
 
-      {/* SETTINGS MODAL - FULLY RESTORED */}
+          {/* Bottom Action Area */}
+          <div className="p-8 bg-slate-900 border-t border-slate-800 flex gap-4">
+             <button onClick={() => setPreviewContent(null)} className="flex-1 py-5 bg-slate-800 text-white rounded-3xl font-black uppercase tracking-widest text-xs hover:bg-slate-700 transition">Batal</button>
+             <button onClick={handlePrint} disabled={isPrinting} className="flex-[2] py-5 bg-blue-600 disabled:bg-blue-400 text-white rounded-3xl font-black uppercase tracking-widest text-xs shadow-[0_0_30px_rgba(37,99,235,0.4)] flex items-center justify-center gap-3 active:scale-95 transition-all">
+                {isPrinting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Printer className="w-5 h-5" />}
+                {isPrinting ? 'Mencetak...' : 'Konfirmasi Cetak'}
+             </button>
+          </div>
+        </div>
+      )}
+
+      {/* SETTINGS MODAL */}
       {activeModal === ModalType.SETTINGS && (
         <div className="fixed inset-0 bg-black/80 z-[200] flex items-end justify-center">
           <div className="bg-white w-full rounded-t-[3rem] p-8 space-y-6 animate-in slide-in-from-bottom duration-300 max-h-[95vh] overflow-y-auto">
@@ -363,7 +389,7 @@ const App: React.FC = () => {
             {/* Komunitas */}
             <div className="space-y-3">
               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Komunitas & Bantuan</p>
-              <button onClick={() => window.open('https://t.me/herniprint_community', '_blank')} className="w-full p-4 bg-sky-50 border border-sky-100 rounded-2xl flex items-center justify-between group active:bg-sky-100 transition">
+              <button onClick={() => window.open('https://t.me/altomediaindonesia', '_blank')} className="w-full p-4 bg-sky-50 border border-sky-100 rounded-2xl flex items-center justify-between group active:bg-sky-100 transition">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-sky-500 text-white rounded-xl flex items-center justify-center shadow-md"><MessageCircle className="w-4 h-4" /></div>
                   <span className="text-sm font-bold text-sky-700">Telegram Community</span>
@@ -372,36 +398,12 @@ const App: React.FC = () => {
               </button>
             </div>
 
-            {/* About & Legal */}
-            <div className="p-6 bg-slate-900 text-white rounded-[2.5rem] space-y-5 shadow-2xl relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/10 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-blue-600/20 transition-all duration-700"></div>
-              
-              <div className="flex items-center gap-4 relative z-10">
-                <div className="w-12 h-12 bg-white/10 backdrop-blur-md border border-white/20 text-blue-400 rounded-2xl flex items-center justify-center font-black text-xl italic">H</div>
-                <div>
-                  <h4 className="text-sm font-black uppercase italic tracking-tighter">HerniPrint Pro</h4>
-                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Version 2.5.0 HD Edition</p>
-                </div>
-              </div>
-
-              <div className="space-y-2 p-3 bg-white/5 rounded-xl border border-white/10 relative z-10">
-                <p className="text-[10px] font-black text-orange-400 uppercase flex items-center gap-1.5"><AlertTriangle className="w-3.5 h-3.5" /> Disclaimer</p>
-                <p className="text-[10px] text-slate-300 leading-relaxed italic">Aplikasi ini adalah solusi profesional untuk pencetakan thermal. Pengguna bertanggung jawab penuh atas keakuratan data.</p>
-              </div>
-
-              <div className="flex gap-2 relative z-10">
-                <button onClick={() => window.open('/docs', '_blank')} className="flex-1 py-3.5 bg-white/10 hover:bg-white/20 border border-white/10 rounded-2xl text-[10px] font-black uppercase flex items-center justify-center gap-2 transition-all"><FileText className="w-3.5 h-3.5" /> Dokumentasi</button>
-                <button onClick={() => window.open('/privacy', '_blank')} className="flex-1 py-3.5 bg-blue-600 hover:bg-blue-500 rounded-2xl text-[10px] font-black uppercase flex items-center justify-center gap-2 transition-all"><ShieldCheck className="w-3.5 h-3.5" /> Privacy Policy</button>
-              </div>
-            </div>
-            
             <div className="pb-6" />
           </div>
         </div>
       )}
 
-      {/* MODALS: QR, BARCODE, SHIPPING, RECEIPT, SCANNER (Existing functionality preserved) */}
-      {/* ... keeping modal code as is to save space, but ensuring they remain in the source ... */}
+      {/* MODALS: QR, BARCODE, SHIPPING, RECEIPT, SCANNER */}
       {activeModal === ModalType.QR_GEN && (
         <div className="fixed inset-0 bg-black/80 z-[200] flex items-center justify-center p-6 animate-in zoom-in duration-300 backdrop-blur-sm">
           <div className="bg-white w-full rounded-[2.5rem] p-8 space-y-6 shadow-2xl">
@@ -467,7 +469,9 @@ const App: React.FC = () => {
                     </div>
                   );
                   setActiveModal(ModalType.NONE);
-                }} className="w-full py-5 bg-indigo-600 text-white rounded-[2rem] font-black uppercase tracking-widest text-xs active:scale-95 transition">Buat Label</button>
+                  setRotation(0);
+                  setScale(1);
+                }} className="w-full py-5 bg-indigo-600 text-white rounded-[2rem] font-black uppercase tracking-widest text-xs active:scale-95 transition">Preview Label</button>
               </div>
             )}
           </div>
@@ -507,9 +511,9 @@ const App: React.FC = () => {
                     <p className="text-xl font-black italic uppercase mb-4">HERNI STORE</p>
                     <div className="border-y border-dashed border-black py-2 mb-4 space-y-1">
                       {receiptItems.map(item => (
-                        <div key={item.id} className="flex justify-between text-[11px] font-bold">
-                          <span>{item.name} x{item.qty}</span>
-                          <span>{(item.price * item.qty).toLocaleString()}</span>
+                        <div key={item.id} className="flex justify-between text-[11px] font-bold text-left">
+                          <span className="flex-1 pr-2 truncate">{item.name} x{item.qty}</span>
+                          <span className="shrink-0">{(item.price * item.qty).toLocaleString()}</span>
                         </div>
                       ))}
                     </div>
@@ -517,10 +521,13 @@ const App: React.FC = () => {
                       <span>Total</span>
                       <span>{receiptItems.reduce((acc, curr) => acc + (curr.price * curr.qty), 0).toLocaleString()}</span>
                     </div>
+                    <p className="text-[10px] font-bold text-slate-400 mt-4">Terima Kasih Telah Berbelanja!</p>
                   </div>
                 );
                 setActiveModal(ModalType.NONE);
-              }} className="w-full py-5 bg-orange-600 text-white rounded-[2rem] font-black uppercase tracking-widest text-xs active:scale-95 transition">Generate</button>
+                setRotation(0);
+                setScale(1);
+              }} className="w-full py-5 bg-orange-600 text-white rounded-[2rem] font-black uppercase tracking-widest text-xs active:scale-95 transition">Preview Struk</button>
             </div>
           </div>
         </div>
@@ -552,7 +559,11 @@ const App: React.FC = () => {
          const file = e.target.files?.[0];
          if (!file) return;
          const reader = new FileReader();
-         reader.onload = (ev) => setPreviewContent(<img src={ev.target?.result as string} className="w-full block" alt="Upload" />);
+         reader.onload = (ev) => {
+           setPreviewContent(<img src={ev.target?.result as string} className="w-full block" alt="Upload" />);
+           setRotation(0);
+           setScale(1);
+         };
          reader.readAsDataURL(file);
       }} />
       <input ref={pdfInputRef} type="file" className="hidden" accept=".pdf,image/*" onChange={() => triggerAlert("Info PDF", "Untuk hasil terbaik, gunakan screenshot file PDF.", "info")} />
