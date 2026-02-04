@@ -303,13 +303,13 @@ const App: React.FC = () => {
         <div className="pb-10" />
       </main>
 
-      {/* SETTINGS MODAL - FULLY RESTORED WITH TELEGRAM, DISCLAIMER, ABOUT, PRIVACY */}
+      {/* SETTINGS MODAL - FULLY RESTORED & ENHANCED */}
       {activeModal === ModalType.SETTINGS && (
         <div className="fixed inset-0 bg-black/80 z-[200] flex items-end justify-center">
           <div className="bg-white w-full rounded-t-[3rem] p-8 space-y-6 animate-in slide-in-from-bottom duration-300 max-h-[95vh] overflow-y-auto">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center border-b pb-4">
               <h3 className="font-black text-2xl text-slate-800 tracking-tighter uppercase italic">Pengaturan</h3>
-              <button onClick={() => setActiveModal(ModalType.NONE)} className="p-2 bg-slate-100 rounded-full"><X className="w-5 h-5" /></button>
+              <button onClick={() => setActiveModal(ModalType.NONE)} className="p-2 bg-slate-100 rounded-full active:scale-90 transition"><X className="w-5 h-5" /></button>
             </div>
 
             {/* Koneksi Section */}
@@ -358,54 +358,60 @@ const App: React.FC = () => {
               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Izin Perangkat</p>
               <div className="grid grid-cols-2 gap-2">
                 <button onClick={requestCamera} className="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col items-center gap-2 active:bg-slate-100 transition">
-                  <Camera className="w-5 h-5 text-slate-400" />
+                  <Camera className={`w-5 h-5 ${permissions.camera === 'granted' ? 'text-emerald-500' : 'text-slate-400'}`} />
                   <span className="text-[10px] font-black uppercase">Izin Kamera</span>
                 </button>
                 <button onClick={requestLocation} className="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col items-center gap-2 active:bg-slate-100 transition">
-                  <MapPin className="w-5 h-5 text-slate-400" />
+                  <MapPin className={`w-5 h-5 ${permissions.location === 'granted' ? 'text-emerald-500' : 'text-slate-400'}`} />
                   <span className="text-[10px] font-black uppercase">Izin Lokasi</span>
                 </button>
               </div>
             </div>
 
-            {/* About & Community Section */}
+            {/* Komunitas Section (RESTORED) */}
             <div className="space-y-3">
               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Komunitas & Bantuan</p>
               <button onClick={() => window.open('https://t.me/herniprint_community', '_blank')} className="w-full p-4 bg-sky-50 border border-sky-100 rounded-2xl flex items-center justify-between group active:bg-sky-100 transition">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-sky-500 text-white rounded-xl flex items-center justify-center"><MessageCircle className="w-4 h-4" /></div>
+                  <div className="w-8 h-8 bg-sky-500 text-white rounded-xl flex items-center justify-center shadow-md"><MessageCircle className="w-4 h-4" /></div>
                   <span className="text-sm font-bold text-sky-700">Telegram Community</span>
                 </div>
-                <ExternalLink className="w-4 h-4 text-sky-300" />
+                <div className="flex items-center gap-1 text-[10px] font-bold text-sky-400 uppercase">Hubungi <ExternalLink className="w-3 h-3" /></div>
               </button>
             </div>
 
-            {/* Info Section */}
-            <div className="p-5 bg-blue-50/50 border border-blue-100 rounded-[2rem] space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-white shadow-sm text-blue-600 rounded-2xl flex items-center justify-center font-black italic">H</div>
+            {/* About & legal Section (RESTORED & ENHANCED) */}
+            <div className="p-6 bg-slate-900 text-white rounded-[2.5rem] space-y-5 shadow-2xl relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/10 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-blue-600/20 transition-all duration-700"></div>
+              
+              <div className="flex items-center gap-4 relative z-10">
+                <div className="w-12 h-12 bg-white/10 backdrop-blur-md border border-white/20 text-blue-400 rounded-2xl flex items-center justify-center font-black text-xl italic shadow-inner">H</div>
                 <div>
-                  <h4 className="text-xs font-black uppercase italic tracking-tighter">HerniPrint Pro</h4>
-                  <p className="text-[10px] text-slate-500 font-bold uppercase opacity-60">Version 2.5.0 HD</p>
+                  <h4 className="text-sm font-black uppercase italic tracking-tighter">HerniPrint Pro</h4>
+                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Version 2.5.0 HD Edition</p>
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <p className="text-[9px] font-bold text-slate-500 uppercase flex items-center gap-1"><AlertTriangle className="w-3 h-3" /> Disclaimer</p>
-                <p className="text-[9px] text-slate-400 leading-tight">Aplikasi ini disediakan "sebagaimana adanya" tanpa jaminan fungsionalitas mutlak untuk semua jenis printer thermal. Pengguna bertanggung jawab penuh atas data yang dicetak.</p>
+              <div className="space-y-2 p-3 bg-white/5 rounded-xl border border-white/10 relative z-10">
+                <p className="text-[10px] font-black text-orange-400 uppercase flex items-center gap-1.5"><AlertTriangle className="w-3.5 h-3.5" /> Disclaimer</p>
+                <p className="text-[10px] text-slate-300 leading-relaxed italic">Aplikasi ini adalah solusi profesional untuk pencetakan thermal. Pengguna bertanggung jawab penuh atas keakuratan data. Kami tidak terafiliasi secara resmi dengan merek printer manapun.</p>
               </div>
 
-              <div className="flex gap-2">
-                <button onClick={() => window.open('/docs', '_blank')} className="flex-1 py-3 bg-white border border-blue-100 rounded-xl text-[10px] font-black uppercase flex items-center justify-center gap-2 transition hover:bg-blue-50"><ExternalLink className="w-3 h-3" /> Docs</button>
-                <button onClick={() => window.open('/privacy', '_blank')} className="flex-1 py-3 bg-white border border-blue-100 rounded-xl text-[10px] font-black uppercase flex items-center justify-center gap-2 text-blue-600 transition hover:bg-blue-50"><ShieldCheck className="w-3 h-3" /> Privacy</button>
+              <div className="flex gap-2 relative z-10">
+                <button onClick={() => window.open('https://herniprint.pro/docs', '_blank')} className="flex-1 py-3.5 bg-white/10 hover:bg-white/20 border border-white/10 rounded-2xl text-[10px] font-black uppercase flex items-center justify-center gap-2 transition-all"><FileText className="w-3.5 h-3.5" /> Dokumentasi</button>
+                <button onClick={() => window.open('https://herniprint.pro/privacy', '_blank')} className="flex-1 py-3.5 bg-blue-600 hover:bg-blue-500 rounded-2xl text-[10px] font-black uppercase flex items-center justify-center gap-2 transition-all"><ShieldCheck className="w-3.5 h-3.5" /> Privacy Policy</button>
               </div>
+
+              <p className="text-center text-[9px] text-slate-500 font-bold uppercase tracking-[0.3em] pt-2">Made with Excellence • 2024</p>
             </div>
-            <div className="pb-4" />
+            
+            <div className="pb-6" />
           </div>
         </div>
       )}
 
-      {/* QR MODAL */}
+      {/* MODALS LAINNYA (TETAP SAMA) */}
+      {/* ... (Modal QR, Barcode, Shipping, Receipt, Scanner tetap ada seperti sebelumnya) ... */}
       {activeModal === ModalType.QR_GEN && (
         <div className="fixed inset-0 bg-black/80 z-[200] flex items-center justify-center p-6 animate-in zoom-in duration-300 backdrop-blur-sm">
           <div className="bg-white w-full rounded-[2.5rem] p-8 space-y-6 shadow-2xl">
@@ -425,7 +431,6 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* BARCODE MODAL */}
       {activeModal === ModalType.BARCODE_GEN && (
         <div className="fixed inset-0 bg-black/80 z-[200] flex items-center justify-center p-6 animate-in zoom-in duration-300 backdrop-blur-sm">
           <div className="bg-white w-full rounded-[2.5rem] p-8 space-y-6 shadow-2xl">
@@ -445,7 +450,6 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* SHIPPING MODAL */}
       {activeModal === ModalType.SHIPPING && (
         <div className="fixed inset-0 bg-black/80 z-[100] flex items-end justify-center animate-in fade-in duration-200">
           <div className="bg-white w-full max-w-sm rounded-t-[2.5rem] overflow-hidden flex flex-col max-h-[90vh]">
@@ -484,20 +488,19 @@ const App: React.FC = () => {
                     </div>
                   );
                   setActiveModal(ModalType.NONE);
-                }} className="w-full py-5 bg-indigo-600 text-white rounded-[2rem] font-black uppercase tracking-widest text-xs">Buat Label</button>
+                }} className="w-full py-5 bg-indigo-600 text-white rounded-[2rem] font-black uppercase tracking-widest text-xs active:scale-95 transition">Buat Label</button>
               </div>
             )}
           </div>
         </div>
       )}
 
-      {/* RECEIPT MODAL */}
       {activeModal === ModalType.RECEIPT && (
         <div className="fixed inset-0 bg-black/80 z-[100] flex items-end justify-center animate-in fade-in duration-200">
           <div className="bg-white w-full max-w-sm rounded-t-[2.5rem] overflow-hidden flex flex-col max-h-[90vh]">
             <div className="p-6 border-b flex justify-between items-center bg-orange-50/50">
               <h3 className="font-black text-orange-700 uppercase tracking-tighter">Struk Toko</h3>
-              <button onClick={() => setActiveModal(ModalType.NONE)} className="p-2 bg-white rounded-full"><X className="w-5 h-5 text-orange-400" /></button>
+              <button onClick={() => setActiveModal(ModalType.NONE)} className="p-2 bg-white rounded-full active:scale-90 transition"><X className="w-5 h-5 text-orange-400" /></button>
             </div>
             <div className="p-6 overflow-y-auto space-y-4">
               <div className="grid grid-cols-1 gap-3">
@@ -506,7 +509,7 @@ const App: React.FC = () => {
                   <input value={receiptInput.price} onChange={e => setReceiptInput({...receiptInput, price: e.target.value})} placeholder="Harga" type="number" className="flex-1 p-4 bg-slate-50 rounded-2xl text-sm font-semibold outline-none" />
                   <input value={receiptInput.qty} onChange={e => setReceiptInput({...receiptInput, qty: e.target.value})} placeholder="Qty" type="number" className="w-24 p-4 bg-slate-50 rounded-2xl text-sm font-semibold outline-none text-center" />
                 </div>
-                <button onClick={addReceiptItem} className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black uppercase tracking-widest text-[10px]">Tambahkan ke Daftar</button>
+                <button onClick={addReceiptItem} className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] active:scale-95 transition">Tambahkan ke Daftar</button>
               </div>
               <div className="space-y-2 mt-4 border-t pt-4">
                 {receiptItems.map(item => (
@@ -515,7 +518,7 @@ const App: React.FC = () => {
                       <p className="text-xs font-black uppercase">{item.name}</p>
                       <p className="text-[10px] text-slate-400">{item.qty} x {item.price.toLocaleString()}</p>
                     </div>
-                    <button onClick={() => setReceiptItems(receiptItems.filter(i => i.id !== item.id))} className="text-red-500"><Trash2 className="w-4 h-4" /></button>
+                    <button onClick={() => setReceiptItems(receiptItems.filter(i => i.id !== item.id))} className="text-red-500 active:scale-90 transition"><Trash2 className="w-4 h-4" /></button>
                   </div>
                 ))}
               </div>
@@ -541,17 +544,16 @@ const App: React.FC = () => {
                   </div>
                 );
                 setActiveModal(ModalType.NONE);
-              }} className="w-full py-5 bg-orange-600 text-white rounded-[2rem] font-black uppercase tracking-widest text-xs">Generate Struk</button>
+              }} className="w-full py-5 bg-orange-600 text-white rounded-[2rem] font-black uppercase tracking-widest text-xs active:scale-95 transition">Generate Struk</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* SCANNER MODAL */}
       {activeModal === ModalType.SCANNER && (
         <div className="fixed inset-0 bg-black z-[300] flex flex-col items-center justify-center p-6">
           <div className="absolute top-10 right-10 z-[310]">
-            <button onClick={() => setActiveModal(ModalType.NONE)} className="p-3 bg-white/10 rounded-full text-white"><X className="w-6 h-6" /></button>
+            <button onClick={() => setActiveModal(ModalType.NONE)} className="p-3 bg-white/10 rounded-full text-white active:scale-90 transition"><X className="w-6 h-6" /></button>
           </div>
           <div className="w-64 h-64 border-2 border-white/50 rounded-3xl relative overflow-hidden flex items-center justify-center">
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-500/20 to-transparent animate-scan" style={{ animation: 'scan 2s linear infinite' }} />
