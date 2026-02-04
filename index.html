@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,14 +11,18 @@
     <link rel="manifest" href="/manifest.json">
     <title>HERNIPRINT Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=VT323&family=Space+Mono&display=swap" rel="stylesheet">
     <script>
       // Global shim for process.env to satisfy Google GenAI SDK
       window.process = { env: { API_KEY: "" } };
     </script>
     <style>
-        body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; background-color: #f8fafc; overflow-x: hidden; }
-        .receipt-font { font-family: 'Courier New', Courier, monospace; }
+        body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; background-color: #f8fafc; overflow-x: hidden; transition: background-color 0.5s ease; }
+        .receipt-font-monospace { font-family: 'Space Mono', 'Courier New', monospace; }
+        .receipt-font-sans-serif { font-family: 'Inter', sans-serif; font-weight: 700; }
+        .receipt-font-serif { font-family: 'Georgia', serif; font-weight: 700; }
+        .receipt-font-dot-matrix { font-family: 'VT323', monospace; letter-spacing: 0.05em; }
+        
         body { overscroll-behavior-y: none; }
         *::-webkit-scrollbar { display: none; }
         * { -ms-overflow-style: none; scrollbar-width: none; }
@@ -78,21 +83,6 @@
             }
           }, 800);
         });
-
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                const isVercel = window.location.hostname.includes('vercel.app');
-                const swUrl = isVercel ? '/sw.js' : new URL('sw.js', window.location.href).href;
-
-                navigator.serviceWorker.register(swUrl)
-                  .then(reg => {
-                    console.log('SW Registered with scope:', reg.scope);
-                  })
-                  .catch(err => {
-                    console.error('SW Registration Failed:', err);
-                  });
-            });
-        }
     </script>
 </body>
 </html>

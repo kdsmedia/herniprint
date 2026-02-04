@@ -1,11 +1,20 @@
 
 export type PaperSize = '58' | '80';
+export type ReceiptFont = 'monospace' | 'sans-serif' | 'serif' | 'dot-matrix';
 
 export interface ReceiptItem {
   id: string;
   name: string;
   price: number;
   qty: number;
+}
+
+export interface Transaction {
+  id: string;
+  timestamp: number;
+  items: ReceiptItem[];
+  total: number;
+  status?: 'success' | 'failed' | 'pending';
 }
 
 export interface ShippingData {
@@ -24,7 +33,10 @@ export enum ModalType {
   SCANNER,
   QR_GEN,
   BARCODE_GEN,
-  AI_SCAN
+  ABOUT,
+  PRIVACY,
+  DISCLAIMER,
+  HISTORY
 }
 
 export interface ThermalOptions {
