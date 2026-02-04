@@ -1,5 +1,4 @@
-
-const CACHE_NAME = 'herniprint-v4';
+const CACHE_NAME = 'herniprint-v5';
 const ASSETS = [
   '/',
   '/index.html',
@@ -10,7 +9,7 @@ const ASSETS = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      // Menggunakan allSettled agar instalasi tidak gagal jika salah satu asset gagal (misal font eksternal)
+      // Menggunakan allSettled agar tidak gagal jika salah satu aset bermasalah
       return Promise.allSettled(ASSETS.map(url => cache.add(url)));
     })
   );
@@ -35,7 +34,7 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
-  // Navigasi fallback: Jika user meminta halaman (navigasi), berikan index.html dari cache
+  // Navigasi fallback: Sangat krusial untuk mencegah 404 di PWA Vercel
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request).catch(() => {
@@ -45,7 +44,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Strategi Cache-First untuk aset statis yang sudah terdaftar
+  // Strategi Cache-First untuk aset
   event.respondWith(
     caches.match(event.request).then((response) => {
       return response || fetch(event.request);

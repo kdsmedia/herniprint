@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#2563eb">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3000/3000185.png">
+    <link rel="apple-touch-icon" href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjWrsxhrCF6FKRh9DnNBd3OzTH0X-EzoHau9zd8BSkKZzoRD-cDWLhtRluLW8FXHd9sxdZSutRlTAcghHKi8ZVapoCSOZmNA3kb9Gm6CIxpFJhYVeFkiHgtWxrvo11ldl8_8GpjNEvsvj3QOSB0PkPDAkyO7tNTPmTBeym5ij9evvK1V52dsx-A7RPE95hk/s500/Gemini_Generated_Image_3r9p5m3r9p5m3r9p-removebg-preview.png">
     <link rel="manifest" href="/manifest.json">
     <title>HERNIPRINT Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -81,8 +81,6 @@
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                // Gunakan path absolut '/sw.js' di Vercel untuk menghindari 404 saat install
-                // Namun gunakan relative URL generator untuk kompatibilitas sandbox dev
                 const isVercel = window.location.hostname.includes('vercel.app');
                 const swUrl = isVercel ? '/sw.js' : new URL('sw.js', window.location.href).href;
 
