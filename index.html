@@ -13,8 +13,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
     <script>
-      // Global shim for process.env to satisfy Google GenAI SDK and other libraries
-      window.process = window.process || { env: { API_KEY: "" } };
+      // Wajib ada paling atas untuk mencegah 'process is not defined'
+      window.process = { env: { API_KEY: "" } };
     </script>
     <style>
         body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; background-color: #f8fafc; overflow-x: hidden; }
@@ -45,7 +45,6 @@
         }
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes scan { 0% { top: 10%; opacity: 0.2; } 50% { top: 90%; opacity: 1; } 100% { top: 10%; opacity: 0.2; } }
     </style>
 <script type="importmap">
 {
@@ -68,11 +67,10 @@
     
     <div id="root"></div>
 
-    <!-- Vite handles the transformation of this TSX file -->
-    <script type="module" src="/index.tsx"></script>
+    <!-- Gunakan path relatif tanpa slash di depan agar Vite build mendeteksinya -->
+    <script type="module" src="index.tsx"></script>
     
     <script>
-        // Hide loader once app is mounted or after timeout
         window.addEventListener('load', () => {
           setTimeout(() => {
             const loader = document.getElementById('app-loader');

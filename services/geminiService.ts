@@ -1,19 +1,19 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
 
-// Inisialisasi di dalam fungsi agar tidak menyebabkan crash saat modul di-import
-const getAIClient = () => {
-  return new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+const getAI = () => {
+  const apiKey = process.env.API_KEY || "";
+  return new GoogleGenAI({ apiKey });
 };
 
 export const extractShippingData = async (base64Image: string) => {
-  const ai = getAIClient();
+  const ai = getAI();
   const response = await ai.models.generateContent({
     model: 'gemini-3-flash-preview',
     contents: {
       parts: [
         { inlineData: { data: base64Image, mimeType: 'image/jpeg' } },
-        { text: 'Extract shipping information from this image into a clean JSON format. Focus on recipient details.' }
+        { text: 'Extract shipping info into JSON: toName, toPhone, toAddress.' }
       ]
     },
     config: {
@@ -32,18 +32,17 @@ export const extractShippingData = async (base64Image: string) => {
     }
   });
 
-  const jsonStr = response.text?.trim() || '{}';
-  return JSON.parse(jsonStr);
+  return JSON.parse(response.text || '{}');
 };
 
 export const extractReceiptData = async (base64Image: string) => {
-  const ai = getAIClient();
+  const ai = getAI();
   const response = await ai.models.generateContent({
     model: 'gemini-3-flash-preview',
     contents: {
       parts: [
         { inlineData: { data: base64Image, mimeType: 'image/jpeg' } },
-        { text: 'Extract list of items, quantities, and prices from this receipt image. Return an array of objects.' }
+        { text: 'Extract items as JSON array with name, price, qty.' }
       ]
     },
     config: {
@@ -63,6 +62,5 @@ export const extractReceiptData = async (base64Image: string) => {
     }
   });
 
-  const jsonStr = response.text?.trim() || '[]';
-  return JSON.parse(jsonStr);
+  return JSON.parse(response.text || '[]');
 };
